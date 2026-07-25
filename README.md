@@ -5,6 +5,10 @@
 
 > A 2-level fzf-based TUI for managing Zellij sessions with session name parsing, status display, and Warp terminal detection.
 
+<p align="center">
+  <img src="assets/screenshot.svg" alt="zsh-zellij-menu demo" width="720">
+</p>
+
 [English](#english) | [Español](#español)
 
 ---

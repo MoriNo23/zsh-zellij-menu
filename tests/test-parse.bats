@@ -41,8 +41,7 @@ setup() {
 }
 
 @test "empty line returns error" {
-    _zzm_parse_line ""
-    [[ "$?" -ne 0 ]]
+    ! _zzm_parse_line ""
 }
 
 @test "format_display includes status when present" {

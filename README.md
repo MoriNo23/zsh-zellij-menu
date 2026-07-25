@@ -63,10 +63,15 @@ On a new terminal, the menu appears:
 Selecting **📋 Explorar sesiones** shows:
 
 ```
-ui2 waydroid    ⏱ 2h 5m 52s ago    📌 EXITED
-xd              ⏱ 9m 24s ago
+web-app         ⏱ 6m ago        ● active
+api-service     ⏱ 6m ago        ● active
+devops          ⏱ 3m ago        📌 EXITED
 ← Volver al menú principal
 ```
+
+### Session Management
+
+Press **`Ctrl+D`** while hovering over a session to kill it instantly. The list reloads automatically.
 
 ### Configuration
 
@@ -137,16 +142,21 @@ Al abrir una terminal, aparece el menú:
 ```
 ✨ Nueva sesión
 📋 Explorar sesiones
-🖥️  Shell sin Zelic
+🖥️  Shell sin Zellij
 ```
 
 Seleccionando **📋 Explorar sesiones** se muestra:
 
 ```
-ui2 waydroid    ⏱ 2h 5m 52s ago    📌 EXITED
-xd              ⏱ 9m 24s ago
+web-app         ⏱ 6m ago        ● active
+api-service     ⏱ 6m ago        ● active
+devops          ⏱ 3m ago        📌 EXITED
 ← Volver al menú principal
 ```
+
+### Gestión de sesiones
+
+Presioná **`Ctrl+D`** sobre una sesión para matarla al instante. La lista se recarga automáticamente.
 
 ### Configuración
 

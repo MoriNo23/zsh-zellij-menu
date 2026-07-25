@@ -47,39 +47,41 @@ _zzm_fzf() {
 
 # ─── Level 2: Session explorer ───────────────────────────────────────────────
 _zzm_explore_sessions() {
-    local sessions
-    sessions=$(zellij list-sessions --no-formatting 2>/dev/null)
+    # Path to standalone reload script
+    local reload_script="$_zzm_dir/zzm-reload.zsh"
 
-    local session_names=()
-    local session_displays=()
+    # Reload command for fzf
+    local reload_cmd="zsh $reload_script"
 
-    if [[ -n "$sessions" ]]; then
-        while IFS= read -r line; do
-            [[ -z "$line" ]] && continue
-            _zzm_parse_line "$line" || continue
-            session_names+=("$_zzm_name")
-            session_displays+=("$_zzm_name    ${ZQM_ICON_TIME} $_zzm_time")
-            [[ -n "$_zzm_status" ]] && session_displays[-1]+="    ${ZQM_ICON_STATUS} $_zzm_status"
-        done <<< "$sessions"
-    fi
+    # Load initial sessions
+    local fzf_input
+    fzf_input=$(zsh "$reload_script" 2>/dev/null)
 
-    session_displays+=("${ZQM_ICON_BACK}")
+    [[ -z "$fzf_input" ]] && return 0
 
     local selection
-    selection=$(printf '%s\n' "${session_displays[@]}" | _zzm_fzf "Sesiones disponibles")
+    selection=$(printf '%s\n' "$fzf_input" | fzf \
+        --prompt="zellij ❯ " \
+        --header="Sesiones disponibles" \
+        --header-first \
+        --height="${ZQM_FZF_HEIGHT}" \
+        --reverse \
+        --border="$ZQM_FZF_BORDER" \
+        --color="$ZQM_FZF_COLORS" \
+        --with-nth 2.. \
+        --delimiter $'\t' \
+        --bind "ctrl-d:execute-silent(zellij kill-session {1} 2>/dev/null)+reload($reload_cmd)" \
+        2>/dev/null)
 
-    # Back or cancel → return to main menu
-    [[ -z "$selection" || "$selection" == "${ZQM_ICON_BACK}" ]] && return 0
+    # Cancel (Ctrl+C/Esc) → back
+    [[ -z "$selection" ]] && return 0
 
-    # Find the real session name by index (parallel arrays)
-    local idx=0 session_name=""
-    for display in "${session_displays[@]}"; do
-        ((idx++))
-        if [[ "$display" == "$selection" ]]; then
-            session_name="${session_names[$idx]}"
-            break
-        fi
-    done
+    # Back option
+    local back_full="${ZQM_ICON_BACK}"
+    [[ "$selection" == *"$back_full"* ]] && return 0
+
+    # Extract session name (first tab-separated field)
+    local session_name="${selection%%$'\t'*}"
 
     if [[ -n "$session_name" ]]; then
         zellij attach "$session_name" || {

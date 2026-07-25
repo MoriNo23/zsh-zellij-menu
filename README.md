@@ -19,7 +19,8 @@
 
 - **2-level TUI**: Main menu → Session explorer with parsed session info
 - **Session name parsing**: Correctly handles names with spaces (e.g., `ui2 waydroid`)
-- **Status display**: Shows `⏱ time` and `📌 EXITED` status for each session
+- **Status display**: Shows `⏱ time` and `active/EXITED` status for each session
+- **Delete sessions**: Press `Ctrl+D` in the session explorer to kill a session (instant, no confirmation)
 - **Warp terminal detection**: Auto-skips Zellij menu in Warp Terminal (2-layer detection: env vars + process tree walk)
 - **No `exec` on attach**: If attach fails, you return to the menu instead of losing your terminal
 - **Configurable**: Override icons, colors, and messages via variables
@@ -98,7 +99,8 @@ MIT — see [LICENSE](LICENSE).
 
 - **TUI de 2 niveles**: Menú principal → Explorador de sesiones con información parseada
 - **Parseo de nombres**: Maneja correctamente nombres con espacios (ej: `ui2 waydroid`)
-- **Estado visual**: Muestra `⏱ tiempo` y `📌 EXITED` para cada sesión
+- **Estado visual**: Muestra `⏱ tiempo` y estado `active/EXITED` para cada sesión
+- **Eliminar sesiones**: Presioná `Ctrl+D` en el explorador para matar una sesión al instante
 - **Detección de Warp**: Saltea el menú en Warp Terminal (detección 2 capas: env vars + process tree walk)
 - **Sin `exec` en attach**: Si el attach falla, volvés al menú en vez de perder la terminal
 - **Configurable**: Personalizá íconos, colores y mensajes

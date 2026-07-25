@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh fzf bats
+
+      - name: Syntax check
+        run: |
+          zsh -n lib/zzm-config.zsh
+          zsh -n lib/zzm-parse.zsh
+          zsh -n lib/zzm-menu.zsh
+          zsh -n zsh-zellij-menu.plugin.zsh
+
+      - name: Run tests
+        run: |
+          bats tests/test-parse.bats

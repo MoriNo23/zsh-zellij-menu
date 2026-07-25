@@ -1,0 +1,5 @@
+# tests/fixtures/sample-sessions.txt
+ui2 waydroid [Created 2h 5m 52s ago] (EXITED - attach to resurrect)
+xd [Created 9m 24s ago]
+waydroid [Created 10s ago] (EXITED - attach to resurrect)
+test session [Created 1d 3h ago]

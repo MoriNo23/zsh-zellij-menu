@@ -20,14 +20,10 @@ _zzm_is_warp() {
     [[ -n "$WARP_SESSION_ID" ]] && return 0
     [[ "$TERM_PROGRAM" == (#i)*warp* ]] && return 0
 
-    # Layer 2: process tree walk (portable)
-    local pid=$$ depth=0
-    while [[ $pid -gt 1 && $depth -lt 10 ]]; do
-        local comm=$(ps -o comm= -p "$pid" 2>/dev/null)
-        [[ "$comm" == "warp-terminal" || "$comm" == "warp" ]] && return 0
-        pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d '[:space:]')
-        (( depth++ ))
-    done
+    # Layer 2: check parent process (solo $PPID, no tree walk)
+    local comm=$(ps -o comm= -p "$PPID" 2>/dev/null)
+    [[ "$comm" == "warp" || "$comm" == "warp-terminal" ]] && return 0
+
     return 1
 }
 

@@ -8,7 +8,7 @@
 # Requirements: zsh, fzf, zellij
 
 # Source dependencies
-local _zzm_dir="${${(%):-%x}:%/*}"
+_zzm_dir="${${(%):-%x}:h}"
 [[ -f "$_zzm_dir/zzm_config.zsh" ]] && source "$_zzm_dir/zzm_config.zsh"
 [[ -f "$_zzm_dir/zzm_parse.zsh" ]] && source "$_zzm_dir/zzm_parse.zsh"
 

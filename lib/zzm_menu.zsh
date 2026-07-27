@@ -1,4 +1,4 @@
-# zzm-menu.zsh — Main TUI logic for zsh-zellij-menu
+# zzm_menu.zsh — Main TUI logic for zsh-zellij-menu
 #
 # Provides: zzm_menu() — 2-level interactive Zellij session manager
 #
@@ -9,8 +9,8 @@
 
 # Source dependencies
 local _zzm_dir="${${(%):-%x}:%/*}"
-[[ -f "$_zzm_dir/zzm-config.zsh" ]] && source "$_zzm_dir/zzm-config.zsh"
-[[ -f "$_zzm_dir/zzm-parse.zsh" ]] && source "$_zzm_dir/zzm-parse.zsh"
+[[ -f "$_zzm_dir/zzm_config.zsh" ]] && source "$_zzm_dir/zzm_config.zsh"
+[[ -f "$_zzm_dir/zzm_parse.zsh" ]] && source "$_zzm_dir/zzm_parse.zsh"
 
 # ─── Warp detection (env vars → process tree walk) ───────────────────────
 _zzm_is_warp() {
@@ -49,7 +49,7 @@ _zzm_fzf() {
 # ─── Level 2: Session explorer ───────────────────────────────────────────────
 _zzm_explore_sessions() {
     # Path to standalone reload script
-    local reload_script="$_zzm_dir/zzm-reload.zsh"
+    local reload_script="$_zzm_dir/zzm_reload.zsh"
 
     # Reload command for fzf
     local reload_cmd="zsh $reload_script"

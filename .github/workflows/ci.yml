@@ -19,10 +19,10 @@ jobs:
 
       - name: Syntax check
         run: |
-          zsh -n lib/zzm-config.zsh
-          zsh -n lib/zzm-parse.zsh
-          zsh -n lib/zzm-menu.zsh
-          zsh -n lib/zzm-reload.zsh
+          zsh -n lib/zzm_config.zsh
+          zsh -n lib/zzm_parse.zsh
+          zsh -n lib/zzm_menu.zsh
+          zsh -n lib/zzm_reload.zsh
           zsh -n zsh-zellij-menu.plugin.zsh
 
       - name: Run tests

@@ -1,4 +1,4 @@
-# zzm-parse.zsh — Parser for `zellij list-sessions --no-formatting` output
+# zzm_parse.zsh — Parser for `zellij list-sessions --no-formatting` output
 #
 # Input format (one line per session):
 #   web-app [Created 6m 33s ago]

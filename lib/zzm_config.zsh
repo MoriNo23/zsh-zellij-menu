@@ -1,4 +1,4 @@
-# zzm-config.zsh — Configuration defaults for zsh-zellij-menu
+# zzm_config.zsh — Configuration defaults for zsh-zellij-menu
 # Override any of these by setting them BEFORE calling zzm_menu.
 
 # Icons (customizable)

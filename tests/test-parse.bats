@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
-# tests/test-parse.bats — Tests for zzm-parse.zsh
+# tests/test-parse.bats — Tests for zzm_parse.zsh
 
 # Load the parser
 load_lib() {
     local lib_dir="${BATS_TEST_FILENAME%/*}/../lib"
-    source "$lib_dir/zzm-config.zsh"
-    source "$lib_dir/zzm-parse.zsh"
+    source "$lib_dir/zzm_config.zsh"
+    source "$lib_dir/zzm_parse.zsh"
 }
 
 setup() {

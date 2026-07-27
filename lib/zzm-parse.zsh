@@ -1,14 +1,14 @@
 # zzm-parse.zsh — Parser for `zellij list-sessions --no-formatting` output
 #
 # Input format (one line per session):
-#   ui2 waydroid [Created 2h 5m 52s ago] (EXITED - attach to resurrect)
-#   xd [Created 9m 24s ago]
+#   web-app [Created 6m 33s ago]
+#   api-service [Created 6m 21s ago]
 #
 # Output: sets global vars _zzm_name, _zzm_time, _zzm_status
 #
 # Usage:
-#   _zzm_parse_line "ui2 waydroid [Created 2h ago] (EXITED - attach to resurrect)"
-#   echo "$_zzm_name"   # ui2 waydroid
+#   _zzm_parse_line "web-app [Created 6m 33s ago] (EXITED - attach to resurrect)"
+#   echo "$_zzm_name"   # web-app
 #   echo "$_zzm_time"   # 2h ago
 #   echo "$_zzm_status" # EXITED
 
@@ -37,7 +37,7 @@ _zzm_parse_line() {
 }
 
 # Build a display string from parsed values
-# Output: "ui2 waydroid    ⏱ 2h ago    📌 EXITED"
+# Output: "web-app    ⏱ 6m 33s ago    📌 EXITED"
 _zzm_format_display() {
     local display="$_zzm_name    ${ZZM_ICON_TIME} $_zzm_time"
     [[ -n "$_zzm_status" ]] && display+="    ${ZZM_ICON_STATUS} $_zzm_status"

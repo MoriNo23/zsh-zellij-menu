@@ -18,7 +18,7 @@
 ### Features
 
 - **2-level TUI**: Main menu → Session explorer with parsed session info
-- **Session name parsing**: Correctly handles names with spaces (e.g., `ui2 waydroid`)
+- **Session name parsing**: Correctly handles names with spaces (e.g., `web app`)
 - **Status display**: Shows `⏱ time` and `active/EXITED` status for each session
 - **Delete sessions**: Press `Ctrl+D` in the session explorer to kill a session (instant, no confirmation)
 - **Warp terminal detection**: Auto-skips Zellij menu in Warp Terminal (2-layer detection: env vars + process tree walk)
@@ -103,7 +103,7 @@ MIT — see [LICENSE](LICENSE).
 ### Características
 
 - **TUI de 2 niveles**: Menú principal → Explorador de sesiones con información parseada
-- **Parseo de nombres**: Maneja correctamente nombres con espacios (ej: `ui2 waydroid`)
+- **Parseo de nombres**: Maneja correctamente nombres con espacios (ej: `web app`)
 - **Estado visual**: Muestra `⏱ tiempo` y estado `active/EXITED` para cada sesión
 - **Eliminar sesiones**: Presioná `Ctrl+D` en el explorador para matar una sesión al instante
 - **Detección de Warp**: Saltea el menú en Warp Terminal (detección 2 capas: env vars + process tree walk)

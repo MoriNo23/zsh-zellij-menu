@@ -39,7 +39,7 @@ _zzm_parse_line() {
 # Build a display string from parsed values
 # Output: "ui2 waydroid    ⏱ 2h ago    📌 EXITED"
 _zzm_format_display() {
-    local display="$_zzm_name    ${ZQM_ICON_TIME} $_zzm_time"
-    [[ -n "$_zzm_status" ]] && display+="    ${ZQM_ICON_STATUS} $_zzm_status"
+    local display="$_zzm_name    ${ZZM_ICON_TIME} $_zzm_time"
+    [[ -n "$_zzm_status" ]] && display+="    ${ZZM_ICON_STATUS} $_zzm_status"
     echo "$display"
 }

@@ -12,15 +12,15 @@ local _zzm_dir="${${(%):-%x}:%/*}"
 [[ -f "$_zzm_dir/zzm-config.zsh" ]] && source "$_zzm_dir/zzm-config.zsh"
 [[ -f "$_zzm_dir/zzm-parse.zsh" ]] && source "$_zzm_dir/zzm-parse.zsh"
 
-# ─── Warp detection (2-layer: env vars + process tree walk) ────────────────
+# ─── Warp detection (env vars → process tree walk) ───────────────────────
 _zzm_is_warp() {
-    [[ "$ZQM_WARP_DETECTION" -eq 0 ]] && return 1
+    [[ "$ZZM_WARP_DETECTION" -eq 0 ]] && return 1
 
-    # Layer 1: env vars (0ms, no fork)
+    # Layer 1: env vars (no fork)
     [[ -n "$WARP_SESSION_ID" ]] && return 0
     [[ "$TERM_PROGRAM" == (#i)*warp* ]] && return 0
 
-    # Layer 2: process tree walk (5-10ms, portable)
+    # Layer 2: process tree walk (portable)
     local pid=$$ depth=0
     while [[ $pid -gt 1 && $depth -lt 10 ]]; do
         local comm=$(ps -o comm= -p "$pid" 2>/dev/null)
@@ -31,17 +31,18 @@ _zzm_is_warp() {
     return 1
 }
 
-# ─── fzf wrapper ─────────────────────────────────────────────────────────────
+# ─── fzf wrapper ──────────────────────────────────────────────────────────
 _zzm_fzf() {
-    local header="$1"
+    local header="$1"; shift
     fzf \
         --prompt="zellij ❯ " \
         --header="$header" \
         --header-first \
-        --height="${ZQM_FZF_HEIGHT}" \
+        --height="${ZZM_FZF_HEIGHT}" \
         --reverse \
-        --border="$ZQM_FZF_BORDER" \
-        --color="$ZQM_FZF_COLORS" \
+        --border="$ZZM_FZF_BORDER" \
+        --color="$ZZM_FZF_COLORS" \
+        "$@" \
         2>/dev/null
 }
 
@@ -56,28 +57,19 @@ _zzm_explore_sessions() {
     # Load initial sessions
     local fzf_input
     fzf_input=$(zsh "$reload_script" 2>/dev/null)
-
     [[ -z "$fzf_input" ]] && return 0
 
     local selection
-    selection=$(printf '%s\n' "$fzf_input" | fzf \
-        --prompt="zellij ❯ " \
-        --header="Sesiones disponibles" \
-        --header-first \
-        --height="${ZQM_FZF_HEIGHT}" \
-        --reverse \
-        --border="$ZQM_FZF_BORDER" \
-        --color="$ZQM_FZF_COLORS" \
+    selection=$(printf '%s\n' "$fzf_input" | _zzm_fzf "Sesiones disponibles" \
         --with-nth 2.. \
         --delimiter $'\t' \
-        --bind "ctrl-d:execute-silent(zellij kill-session {1} 2>/dev/null)+reload($reload_cmd)" \
-        2>/dev/null)
+        --bind "ctrl-d:execute-silent(zellij kill-session '{1}' 2>/dev/null)+reload($reload_cmd)")
 
     # Cancel (Ctrl+C/Esc) → back
     [[ -z "$selection" ]] && return 0
 
     # Back option
-    local back_full="${ZQM_ICON_BACK}"
+    local back_full="${ZZM_ICON_BACK}"
     [[ "$selection" == *"$back_full"* ]] && return 0
 
     # Extract session name (first tab-separated field)
@@ -85,7 +77,7 @@ _zzm_explore_sessions() {
 
     if [[ -n "$session_name" ]]; then
         zellij attach "$session_name" || {
-            print -P "%F{red}${ZQM_MSG_ATTACH_FAIL}%f" "$session_name"
+            print -P "%F{red}${ZZM_MSG_ATTACH_FAIL}${session_name}%f"
             sleep 1
         }
     fi
@@ -102,9 +94,9 @@ zzm_menu() {
 
     while true; do
         local main_choices=(
-            "$ZQM_ICON_NEW"
-            "$ZQM_ICON_EXPLORE"
-            "$ZQM_ICON_SHELL"
+            "$ZZM_ICON_NEW"
+            "$ZZM_ICON_EXPLORE"
+            "$ZZM_ICON_SHELL"
         )
 
         local selection
@@ -115,16 +107,20 @@ zzm_menu() {
                 # Ctrl+C / Esc → exit to shell
                 clear; break
                 ;;
-            "$ZQM_ICON_NEW")
-                echo -n "$ZQM_MSG_NEW_PROMPT"
+            "$ZZM_ICON_NEW")
+                echo -n "$ZZM_MSG_NEW_PROMPT"
                 local session_name
                 read session_name
-                [[ -z "$session_name" ]] && exec zellij || exec zellij -s "$session_name"
+                if [[ -z "$session_name" ]]; then
+                    exec zellij
+                else
+                    exec zellij -s "$session_name"
+                fi
                 ;;
-            "$ZQM_ICON_SHELL")
+            "$ZZM_ICON_SHELL")
                 clear; break
                 ;;
-            "$ZQM_ICON_EXPLORE")
+            "$ZZM_ICON_EXPLORE")
                 _zzm_explore_sessions
                 # After explore (attach or back), loop shows main menu again
                 ;;

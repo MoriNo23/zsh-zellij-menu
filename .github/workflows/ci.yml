@@ -22,6 +22,7 @@ jobs:
           zsh -n lib/zzm-config.zsh
           zsh -n lib/zzm-parse.zsh
           zsh -n lib/zzm-menu.zsh
+          zsh -n lib/zzm-reload.zsh
           zsh -n zsh-zellij-menu.plugin.zsh
 
       - name: Run tests

@@ -20,10 +20,8 @@ if [[ -n "$sessions" ]]; then
     while IFS= read -r line; do
         [[ -z "$line" ]] && continue
         _zzm_parse_line "$line" || continue
-        local display="$_zzm_name    ${ZQM_ICON_TIME:-⏱} $_zzm_time"
-        [[ -n "$_zzm_status" ]] && display+="    ${ZQM_ICON_STATUS:-📌} $_zzm_status"
-        printf '%s\t%s\n' "$_zzm_name" "$display"
+        printf '%s\t%s\n' "$_zzm_name" "$(_zzm_format_display)"
     done <<< "$sessions"
 fi
 
-printf '\t%s\n' "${ZQM_ICON_BACK:-← Volver al menú principal}"
+printf '\t%s\n' "${ZZM_ICON_BACK:-← Volver al menú principal}"

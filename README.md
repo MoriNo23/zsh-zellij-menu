@@ -78,12 +78,12 @@ Press **`Ctrl+D`** while hovering over a session to kill it instantly. The list 
 Override defaults **before** calling `zzm_menu`:
 
 ```zsh
-ZQM_ICON_NEW="🚀 New Session"
-ZQM_ICON_EXPLORE="🔍 Browse Sessions"
-ZQM_ICON_SHELL="🐚 Shell"
-ZQM_FZF_HEIGHT="50%"
-ZQM_FZF_BORDER="double"
-ZQM_WARP_DETECTION=0  # disable Warp detection
+ZZM_ICON_NEW="🚀 New Session"
+ZZM_ICON_EXPLORE="🔍 Browse Sessions"
+ZZM_ICON_SHELL="🐚 Shell"
+ZZM_FZF_HEIGHT="50%"
+ZZM_FZF_BORDER="double"
+ZZM_WARP_DETECTION=0  # disable Warp detection
 ```
 
 ### Requirements
@@ -163,12 +163,12 @@ Presioná **`Ctrl+D`** sobre una sesión para matarla al instante. La lista se r
 Podés sobreescribir los defaults **antes** de llamar `zzm_menu`:
 
 ```zsh
-ZQM_ICON_NEW="🚀 Nueva sesión"
-ZQM_ICON_EXPLORE="🔍 Explorar"
-ZQM_ICON_SHELL="🐚 Shell"
-ZQM_FZF_HEIGHT="50%"
-ZQM_FZF_BORDER="double"
-ZQM_WARP_DETECTION=0  # desactivar detección de Warp
+ZZM_ICON_NEW="🚀 Nueva sesión"
+ZZM_ICON_EXPLORE="🔍 Explorar"
+ZZM_ICON_SHELL="🐚 Shell"
+ZZM_FZF_HEIGHT="50%"
+ZZM_FZF_BORDER="double"
+ZZM_WARP_DETECTION=0  # desactivar detección de Warp
 ```
 
 ### Requisitos

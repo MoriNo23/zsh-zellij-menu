@@ -48,7 +48,7 @@ else
         echo ""
         echo "$MARKER"
         echo "fpath=(~/.zsh-zellij-menu/lib \$fpath)"
-        echo "autoload -Uz zzm_menu"
+        echo "source ~/.zsh-zellij-menu/lib/zzm_menu.zsh"
         echo ""
         echo "# Zellij TUI (auto on new terminal, skip in Warp)"
         echo 'if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi'

@@ -5,5 +5,5 @@
 local _zzm_plugin_dir="${${(%):-%x}:%/*}/lib"
 [[ -d "$_zzm_plugin_dir" ]] && fpath=("$_zzm_plugin_dir" $fpath)
 
-# Autoload the main function
-autoload -Uz zzm_menu
+# Autoload the main function via source (autoload no resuelve .zsh)
+source "$_zzm_plugin_dir/zzm_menu.zsh"

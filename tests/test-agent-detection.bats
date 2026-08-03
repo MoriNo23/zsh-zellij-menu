@@ -65,3 +65,41 @@ zzz_detect() {
         skip "bash not available (exec -a needed to rename parent)"
     fi
 }
+
+@test "direct parent = terminal emulator (kitty) forces HUMAN even with leaked agent env (Layer 0)" {
+    # Human shell: parent is the emulator. Leaked agent env (HERMES_SESSION,
+    # ANTHROPIC_BASE_URL) from opening kitty inside an agent context must NOT
+    # suppress the menu. This is the Warp-adjacent regression Mori hit.
+    local probe="$BATS_TEST_TMPDIR/probe-l0.zsh"
+    printf '%s\n' \
+        "_zzm_dir='$REPO_DIR/lib'" \
+        'source "$_zzm_dir/zzm_config.zsh"' \
+        'source "$_zzm_dir/zzm_menu.zsh"' \
+        'unset ZZM_AGENT_SKIP' \
+        'HERMES_SESSION=1' \
+        'ANTHROPIC_BASE_URL=https://ex' \
+        'if _zzm_is_agent_shell; then echo AGENT; else echo HUMAN; fi' \
+        > "$probe"
+
+    local out
+    out=$(bash -c 'exec -a kitty zsh --no-rcs "$1"' _ "$probe" 2>/dev/null)
+    [[ "$out" == "HUMAN" ]]
+}
+
+@test "direct parent = agent binary (node) still triggers skip despite terminal-style probe" {
+    # Guards again the opposite error: Layer 0 must NOT blanket-whitelist every
+    # parent — an agent parent (node) must keep suppressing the menu.
+    probe="$BATS_TEST_TMPDIR/probe-agent.zsh"
+    printf '%s\n' \
+        "_zzm_dir='$REPO_DIR/lib'" \
+        'source "$_zzm_dir/zzm_config.zsh"' \
+        'source "$_zzm_dir/zzm_menu.zsh"' \
+        'unset ZZM_AGENT_SKIP' \
+        'HERMES_SESSION=1' \
+        'if _zzm_is_agent_shell; then echo AGENT; else echo HUMAN; fi' \
+        > "$probe"
+
+    local out
+    out=$(bash -c 'exec -a node zsh --no-rcs "$1"' _ "$probe" 2>/dev/null)
+    [[ "$out" == "AGENT" ]]
+}

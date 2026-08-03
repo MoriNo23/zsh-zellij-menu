@@ -28,6 +28,17 @@ ZZM_AGENT_BINS=(
     node python python3 bun deno npm
 )
 
+# Real terminal emulators. A human shell's DIRECT parent is always one of
+# these; agent runtimes open a PTY and never spawn an emulator. If the parent
+# matches, the shell is human — stop detection immediately (this also discards
+# agent env vars inherited through the terminal, e.g. opening kitty from a
+# shell where an agent had run).
+ZZM_TERMINAL_BINS=(
+    kitty kitten konsole xterm urxvt rxvt
+    gnome-terminal gnome-terminal-server alacritty wezterm foot st
+    tmux screen
+)
+
 # Manual opt-out: ZZM_AGENT_SKIP=1 forces the menu to skip the agent check.
 # Set it before sourcing zzm_menu.zsh, or export it in any agent/tool env you want
 # to protect (works for agents not in ZZM_AGENT_BINS).

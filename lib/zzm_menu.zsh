@@ -59,6 +59,18 @@ _zzm_is_agent_shell() {
     [[ -n "$ZZM_AGENT_SKIP" && "$ZZM_AGENT_SKIP" != "0" ]] && return 0
     [[ "$ZZM_AGENT_DETECTION" -eq 0 ]] && return 1
 
+    # Layer 0 (NEW): direct parent is a real terminal emulator → human shell.
+    # Agents open a PTY, they never spawn an emulator; a human shell's parent
+    # is ALWAYS the emulator. Cut detection here — this also discards agent env
+    # vars (HERMES_SESSION/OPENCODE/CLAUDE_CODE) that leak into the shell via
+    # terminal inheritance when kitty/konsole is opened from an agent context.
+    local parent_comm
+    parent_comm=$(ps -o comm= -p "$PPID" 2>/dev/null | tr -d '[:space:]')
+    local term_bin
+    for term_bin in $ZZM_TERMINAL_BINS; do
+        [[ "$parent_comm" == "$term_bin" ]] && return 1
+    done
+
     # Layer 2: env vars set by known agent runtimes
     [[ -n "$HERMES_SESSION" ]] && return 0
     [[ -n "$OPENCODE" ]] && return 0

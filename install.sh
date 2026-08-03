@@ -37,7 +37,7 @@ cp "$SCRIPT_DIR/lib/"*.zsh "$PLUGIN_DIR/lib/"
 
 echo "✅ Plugin installed to $PLUGIN_DIR"
 
-# ─── Add to .zshrc ──────────────────────────────────────────────────────────
+# ─── Add to .zshrc (function available) ─────────────────────────────────────
 MARKER="# zsh-zellij-menu"
 END_MARKER="# end zsh-zellij-menu"
 
@@ -49,12 +49,32 @@ else
         echo "$MARKER"
         echo "fpath=(~/.zsh-zellij-menu/lib \$fpath)"
         echo "source ~/.zsh-zellij-menu/lib/zzm_menu.zsh"
-        echo ""
-        echo "# Zellij TUI (auto on new terminal, skip in Warp and AI-agent shells)"
-        echo 'if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi'
         echo "$END_MARKER"
     } >> "$ZSHRC"
-    echo "✅ Added to $ZSHRC"
+    echo "✅ Added lib source to $ZSHRC"
+fi
+
+# ─── Add auto-launch guard to .zshenv (NOT .zshrc) ──────────────────────────
+# kitty (and other terminals) inject ZDOTDIR and never load ~/.zshrc, so the
+# auto-launch guard must live in the one startup file every shell reads.
+ZSENV="${HOME}/.zshenv"
+if grep -q "ZELLIJ MENU" "$ZSENV" 2>/dev/null; then
+    echo "ℹ️  Auto-launch guard already in .zshenv — skipping."
+else
+    {
+        echo ""
+        echo "# ============================================================"
+        echo "# ZSH ZELLIJ MENU — auto-launch guard (.zshenv, not .zshrc)"
+        echo "# Kitty injects ZDOTDIR and never loads ~/.zshrc; .zshenv is"
+        echo "# the one startup file every zsh reads. Guarded for interactive"
+        echo "# shells only (skips agents, non-TTY, inside Zellij)."
+        echo "# ============================================================"
+        echo 'if [[ -o interactive && -z "$ZELLIJ" && -t 0 ]]; then'
+        echo '    source ~/.zsh-zellij-menu/lib/zzm_menu.zsh'
+        echo '    zzm_menu'
+        echo 'fi'
+    } >> "$ZSENV"
+    echo "✅ Added auto-launch guard to $ZSENV"
 fi
 
 echo ""

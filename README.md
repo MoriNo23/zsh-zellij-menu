@@ -41,15 +41,25 @@ Open a new terminal to activate.
 git clone https://github.com/MoriNo23/zsh-zellij-menu ~/.zsh-zellij-menu
 ```
 
-Add to `.zshrc`:
+Add to `~/.zshenv` (NOT `.zshrc` — see note below):
 
 ```zsh
-fpath=(~/.zsh-zellij-menu/lib $fpath)
-autoload -Uz zzm_menu
-
-# Auto-launch on new terminal (skips inside Zellij, in Warp, and in AI-agent shells)
-if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi
+if [[ -o interactive && -z "$ZELLIJ" && -t 0 ]]; then
+    source ~/.zsh-zellij-menu/lib/zzm_menu.zsh
+    zzm_menu
+fi
 ```
+
+> **Why `.zshenv` and not `.zshrc`?** Kitty (and other terminals that inject
+> `ZDOTDIR`) does not load `~/.zshrc` by default: kitty sets
+> `ZDOTDIR=/usr/lib/kitty/shell-integration/zsh`, whose `.zshenv` sources your
+> `~/.zshenv` but **never** `~/.zshrc`. The auto-launch guard must live in the
+> only startup file every shell reads. `.zshenv` is loaded in ALL shells, so
+> the guard is gated on `-o interactive` (skip non-interactive/agent shells)
+> plus the existing `-z "$ZELLIJ" && -t 0` checks.
+
+You may also want `fpath=(~/.zsh-zellij-menu/lib $fpath)` in `.zshrc` for the
+`zzm_menu` function to be callable manually.
 
 ### Usage
 

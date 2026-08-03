@@ -35,6 +35,7 @@ Interactive Zellij session manager for zsh (fzf TUI, 2 levels: main menu → ses
 
 ## Pitfalls
 
+- **Kitty NO carga `~/.zshrc` por defecto** — kitty inyecta `ZDOTDIR=/usr/lib/kitty/shell-integration/zsh` cuya `.zshenv` carga `~/.zshenv` pero NUNCA `~/.zshrc`. El guard de arranque (`if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi`) NO debe vivir en `.zshrc` si el usuario usa kitty, o el menú jamás arranca. Vive en `~/.zshenv` (el único arranque que kitty manda) con protección `-o interactive && -t 0`. Síntoma: "el menú no aparece en kitty pero sí en otros terminales" — culpable ZDOTDIR, NO la detección.
 - `setopt extended_glob` NO está activo por defecto en zsh — `(#i)*warp*` falla silenciosamente fuera de `setopt local_options extended_glob`.
 - El test de warp con `TERM_PROGRAM=WarpTerminal` solo debe dar NOT-WARP si el fix de leak sigue vivo (regresión guardada).
 - Al sincronizar a prod: `cp lib/zzm_menu.zsh ~/.zsh-zellij-menu/lib/` + `cp lib/zzm_config.zsh ...` y verificar `diff -r --exclude='*.bak*'`.

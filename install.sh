@@ -50,7 +50,7 @@ else
         echo "fpath=(~/.zsh-zellij-menu/lib \$fpath)"
         echo "source ~/.zsh-zellij-menu/lib/zzm_menu.zsh"
         echo ""
-        echo "# Zellij TUI (auto on new terminal, skip in Warp)"
+        echo "# Zellij TUI (auto on new terminal, skip in Warp and AI-agent shells)"
         echo 'if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi'
         echo "$END_MARKER"
     } >> "$ZSHRC"

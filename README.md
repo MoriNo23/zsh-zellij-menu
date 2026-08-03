@@ -22,6 +22,7 @@
 - **Status display**: Shows `⏱ time` and `active/EXITED` status for each session
 - **Delete sessions**: Press `Ctrl+D` in the session explorer to kill a session (instant, no confirmation)
 - **Warp terminal detection**: Auto-skips Zellij menu in Warp Terminal (2-layer detection: env vars + process tree walk)
+- **AI-agent shell detection**: Skips the menu when an AI runtime (opencode, codex, claude, hermes...) opens its own shell with a PTY — prevents fzf from hanging on a human that isn't there. 3 layers: manual opt-out (`ZZM_AGENT_SKIP=1`), env vars, and ancestor walk (`ZZM_AGENT_BINS`).
 - **No `exec` on attach**: If attach fails, you return to the menu instead of losing your terminal
 - **Configurable**: Override icons, colors, and messages via variables
 
@@ -46,7 +47,7 @@ Add to `.zshrc`:
 fpath=(~/.zsh-zellij-menu/lib $fpath)
 autoload -Uz zzm_menu
 
-# Auto-launch on new terminal (skip in Warp)
+# Auto-launch on new terminal (skips inside Zellij, in Warp, and in AI-agent shells)
 if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi
 ```
 
@@ -84,6 +85,8 @@ ZZM_ICON_SHELL="🐚 Shell"
 ZZM_FZF_HEIGHT="50%"
 ZZM_FZF_BORDER="double"
 ZZM_WARP_DETECTION=0  # disable Warp detection
+ZZM_AGENT_SKIP=1      # force-skip even for unknown AI agents/tools
+ZZM_AGENT_DETECTION=0 # disable AI-agent detection entirely
 ```
 
 ### Requirements
@@ -107,6 +110,7 @@ MIT — see [LICENSE](LICENSE).
 - **Estado visual**: Muestra `⏱ tiempo` y estado `active/EXITED` para cada sesión
 - **Eliminar sesiones**: Presioná `Ctrl+D` en el explorador para matar una sesión al instante
 - **Detección de Warp**: Saltea el menú en Warp Terminal (detección 2 capas: env vars + process tree walk)
+- **Detector de agentes IA/tools**: Saltea el menú cuando una IA (opencode, codex, claude, hermes...) abre su propia shell con PTY — evita que fzf se cuelgue esperando a un humano que no está. 3 capas: opt-out manual (`ZZM_AGENT_SKIP=1`), env vars, y walk de ancestros (`ZZM_AGENT_BINS`).
 - **Sin `exec` en attach**: Si el attach falla, volvés al menú en vez de perder la terminal
 - **Configurable**: Personalizá íconos, colores y mensajes
 
@@ -131,7 +135,7 @@ Agregar a `.zshrc`:
 fpath=(~/.zsh-zellij-menu/lib $fpath)
 autoload -Uz zzm_menu
 
-# Auto-lanzar en terminal nueva (saltear en Warp)
+# Auto-lanzar en terminal nueva (saltea en Zellij, en Warp y en shells de IA)
 if [[ -z "$ZELLIJ" && -t 0 ]]; then zzm_menu; fi
 ```
 

@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y zsh fzf bats
+          sudo apt-get install -y zsh fzf bats python3
 
       - name: Syntax check
         run: |
@@ -24,7 +24,14 @@ jobs:
           zsh -n lib/zzm_menu.zsh
           zsh -n lib/zzm_reload.zsh
           zsh -n zsh-zellij-menu.plugin.zsh
+          bash -n scripts/mutate.sh
 
       - name: Run tests
         run: |
           bats tests/test-parse.bats
+          bats tests/test-warp.bats
+          bats tests/test-agent-detection.bats
+
+      - name: Mutation testing
+        run: |
+          bash scripts/mutate.sh --quiet

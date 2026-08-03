@@ -16,14 +16,65 @@ _zzm_dir="${${(%):-%x}:h}"
 _zzm_is_warp() {
     [[ "$ZZM_WARP_DETECTION" -eq 0 ]] && return 1
 
-    # Layer 1: env vars (no fork)
-    [[ -n "$WARP_SESSION_ID" ]] && return 0
-    [[ "$TERM_PROGRAM" == (#i)*warp* ]] && return 0
+    # Layer 0 (NEW): unequivocal non-Warp signals FIRST.
+    # Kitty sets TERM=xterm-kitty but does NOT reset TERM_PROGRAM — so a shell
+    # launched under/from Warp can inherit TERM_PROGRAM=WarpTerminal and be
+    # falsely detected. TERM is terminal-controlled and reliable, so if the
+    # current terminal is unmistakably NOT Warp, bail out early.
+    case "$TERM" in
+        xterm-kitty|screen|tmux*) return 1 ;;
+    esac
 
-    # Layer 2: check parent process (solo $PPID, no tree walk)
+    # Layer 1: env vars (no fork). Prefer a Warp-EXCLUSIVE marker over the
+    # leaky generic TERM_PROGRAM.
+    [[ -n "$WARP_SESSION_ID" ]] && return 0
+    [[ -n "$WARP_TERMINAL_SESSION_UUID" ]] && return 0
+
+    # Layer 1b: TERM_PROGRAM only as weak signal, and only when combined with
+    # a process-tree confirmation (avoids the leaky false positive).
+    setopt local_options extended_glob
+    if [[ "$TERM_PROGRAM" == (#i)*warp* ]]; then
+        local pp_comm=$(ps -o comm= -p "$PPID" 2>/dev/null)
+        [[ "$pp_comm" == "warp" || "$pp_comm" == "warp-terminal" ]] && return 0
+    fi
+
+    # Layer 2: parent process check
     local comm=$(ps -o comm= -p "$PPID" 2>/dev/null)
     [[ "$comm" == "warp" || "$comm" == "warp-terminal" ]] && return 0
 
+    return 1
+}
+
+# ─── AI agent / tool shell detection ─────────────────────────────────────
+# Problem: agent runtimes (opencode, codex, claude, hermes, ...) open their
+# own interactive shells with a PTY. They pass `[[ -z "$ZELLIJ" && -t 0 ]]`
+# and would block forever on the fzf menu — no human to pick an option.
+#
+# Layers (same pattern as Warp detection):
+#   Layer 1: manual opt-out env var (ZZM_AGENT_SKIP=1) — also for unknown agents
+#   Layer 2: env vars set by known agent runtimes
+#   Layer 3: ancestor process walk looking for agent binaries
+_zzm_is_agent_shell() {
+    # Layer 1: manual opt-out (force skip the menu)
+    [[ -n "$ZZM_AGENT_SKIP" && "$ZZM_AGENT_SKIP" != "0" ]] && return 0
+    [[ "$ZZM_AGENT_DETECTION" -eq 0 ]] && return 1
+
+    # Layer 2: env vars set by known agent runtimes
+    [[ -n "$HERMES_SESSION" ]] && return 0
+    [[ -n "$OPENCODE" ]] && return 0
+    [[ -n "$CLAUDE_CODE" ]] && return 0
+
+    # Layer 3: ancestor walk (max 10 levels) for agent binaries
+    local pid=$PPID depth=0 comm bin
+    while [[ $pid -gt 1 && $depth -lt 10 ]]; do
+        comm=$(ps -o comm= -p "$pid" 2>/dev/null | tr -d '[:space:]')
+        [[ -z "$comm" ]] && break
+        for bin in $ZZM_AGENT_BINS; do
+            [[ "$comm" == "$bin" ]] && return 0
+        done
+        pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d '[:space:]')
+        (( depth++ ))
+    done
     return 1
 }
 
@@ -87,6 +138,8 @@ zzm_menu() {
     [[ ! -t 0 ]] && return 0
     # Skip if Warp terminal
     _zzm_is_warp && return 0
+    # Skip if an AI agent / tool opened this shell (no human to pick)
+    _zzm_is_agent_shell && return 0
 
     while true; do
         local main_choices=(
